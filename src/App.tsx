@@ -29,11 +29,9 @@ interface Product {
   priceCents: number;
 }
 
-// API Configuration
 const API_BASE_URL = 'http://localhost:5000';
 const USER_ID = 'user123';
 
-// Utility Functions
 const formatPrice = (cents: number): string => {
   return `$${(cents / 100).toFixed(2)}`;
 };
@@ -280,109 +278,107 @@ const App: React.FC = () => {
       )}
 
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="flex items-center gap-3 mb-8">
           <ShoppingCart className="text-indigo-600" size={40} />
           <h1 className="text-4xl font-bold text-gray-800">Shopping Cart</h1>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Products Section */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Available Products</h2>
-              {products.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  <p className="text-lg">No products available</p>
-                </div>
-              ) : (
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {products.map((product) => (
-                    <div
-                      key={product.id}
-                      className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-shadow"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-gray-800 mb-1">{product.name}</h3>
-                          <p className="text-xs text-gray-400 mb-2">{product.sku}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-indigo-600">
-                          {formatPrice(product.priceCents)}
-                        </span>
-                        <button
-                          onClick={() => handleAddToCart(product.id)}
-                          disabled={actionLoading}
-                          className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+        {/* Products Section - Full Width at Top */}
+        <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Available Products</h2>
+          {products.length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              <p className="text-lg">No products available</p>
             </div>
-
-            {/* Cart Items */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Cart</h2>
-              {!cart || cart.items.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  <ShoppingCart size={64} className="mx-auto mb-4 opacity-30" />
-                  <p className="text-lg">Your cart is empty</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {cart.items.map((item) => (
-                    <div
-                      key={item.productId}
-                      className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow"
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-shadow"
+                >
+                  <h3 className="font-semibold text-gray-800 mb-1">{product.name}</h3>
+                  <p className="text-xs text-gray-400 mb-3">{product.sku}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-indigo-600">
+                      {formatPrice(product.priceCents)}
+                    </span>
+                    <button
+                      onClick={() => handleAddToCart(product.id)}
+                      disabled={actionLoading}
+                      className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-800">{item.name}</h3>
-                        <p className="text-sm text-gray-500">
-                          {formatPrice(item.priceCents)} each
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
-                          disabled={actionLoading}
-                          className="p-1 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50"
-                        >
-                          <Minus size={16} />
-                        </button>
-                        <span className="w-12 text-center font-semibold">{item.quantity}</span>
-                        <button
-                          onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
-                          disabled={actionLoading}
-                          className="p-1 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50"
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold text-lg text-gray-800">
-                          {formatPrice(item.totalCents)}
-                        </p>
-                      </div>
+                      <Plus size={16} />
+                      Add
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Cart and Summary Side by Side */}
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Left Side - Cart Items */}
+          <div className="bg-white rounded-2xl shadow-xl p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Cart</h2>
+            {!cart || cart.items.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <ShoppingCart size={64} className="mx-auto mb-4 opacity-30" />
+                <p className="text-lg">Your cart is empty</p>
+                <p className="text-sm mt-2">Add some products to get started!</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {cart.items.map((item) => (
+                  <div
+                    key={item.productId}
+                    className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-gray-800 truncate">{item.name}</h3>
+                      <p className="text-sm text-gray-500">
+                        {formatPrice(item.priceCents)} each
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
                       <button
-                        onClick={() => handleRemoveItem(item.productId)}
+                        onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
                         disabled={actionLoading}
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                        className="p-1 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50"
                       >
-                        <Trash2 size={20} />
+                        <Minus size={16} />
+                      </button>
+                      <span className="w-12 text-center font-semibold">{item.quantity}</span>
+                      <button
+                        onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
+                        disabled={actionLoading}
+                        className="p-1 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50"
+                      >
+                        <Plus size={16} />
                       </button>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    <div className="text-right min-w-fit">
+                      <p className="font-bold text-lg text-gray-800">
+                        {formatPrice(item.totalCents)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleRemoveItem(item.productId)}
+                      disabled={actionLoading}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Summary Section */}
+          {/* Right Side - Coupon & Summary */}
           <div className="space-y-6">
             {/* Coupon Section */}
             <div className="bg-white rounded-2xl shadow-xl p-6">
@@ -400,7 +396,7 @@ const App: React.FC = () => {
                           {cart.totals.appliedCouponCode}
                         </span>
                         <span className="text-xs text-green-600">
-                          ✨ Auto-applied or manually added
+                          ✨ Active discount
                         </span>
                       </div>
                       <button
@@ -414,9 +410,6 @@ const App: React.FC = () => {
                     <p className="text-sm text-green-700 font-semibold">
                       Saving {formatPrice(cart.totals.discountCents)}!
                     </p>
-                  </div>
-                  <div className="text-xs text-gray-500 text-center">
-                    Or enter a different coupon code below
                   </div>
                 </div>
               ) : (
@@ -441,16 +434,16 @@ const App: React.FC = () => {
                   disabled={!couponCode.trim() || actionLoading}
                   className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Apply Manual Coupon
+                  Apply Coupon
                 </button>
               </div>
 
               <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-xs text-gray-600 font-semibold mb-2">Manual Codes:</p>
+                <p className="text-xs text-gray-600 font-semibold mb-2">Available Codes:</p>
                 <p className="text-xs text-gray-600 mb-1">• SAVE10 - $10 off</p>
                 <p className="text-xs text-gray-600 mb-3">• OFF10 - 10% off (max $5)</p>
                 <p className="text-xs text-gray-500 italic">
-                  💡 Auto-apply coupons will activate automatically when you meet the requirements!
+                  💡 Some coupons auto-apply when you meet requirements!
                 </p>
               </div>
             </div>
@@ -483,7 +476,7 @@ const App: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <button className="w-full mt-6 bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 transition-colors font-semibold text-lg">
+                <button className="w-full mt-6 bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 transition-colors font-semibold text-lg shadow-lg hover:shadow-xl">
                   Proceed to Checkout
                 </button>
               </div>
